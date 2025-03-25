@@ -1,0 +1,5 @@
+apikey="00DNS00000GYBUW!AQEAQHycw0nKX5nMBCwvQ1SZgItpYCbAv7IrBQxnnthehu8_P5aCLd82zTXWajA1jv6xQVeRjq4k7kl2oDad6GLUJh6u4kAV"
+
+instance_url="https://orgfarm-2d12fabc67-dev-ed.develop.my.salesforce.com"
+
+client_id="3MVG98_Psg5cppyYCmk1gZNC25o00SXpgpodlS29IZ6pXiHkt3xuPa5qIjBTtEgdsiMuIWVN_8F0jnwEtbDh4"
