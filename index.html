@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Bulk Upload</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #00aaff;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #bbbbbb;
+        }
+
+        input {
+            background: #2c2c2c;
+            border: 1px solid #444;
+            padding: 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #00aaff;
+            box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.5);
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+            box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.5);
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            background: #2c2c2c;
+            border: 1px solid #444;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Salesforce Bulk Upload</h2>
+
+        <div class="form-group">
+            <label>Access Token:</label>
+            <input type="text" id="access_token">
+        </div>
+
+        <div class="form-group">
+            <label>Instance URL:</label>
+            <input type="text" id="instance_url">
+        </div>
+
+        <div class="form-group">
+            <label>Object Name:</label>
+            <input type="text" id="object_name">
+        </div>
+
+        <button onclick="createJob()">Create Job</button>
+
+        <div class="form-group">
+            <label>Job ID:</label>
+            <input type="text" id="job_id">
+        </div>
+
+        <div class="form-group">
+            <input type="file" id="csv_file">
+        </div>
+
+        <div class="button-group">
+            <button onclick="uploadData()">Upload Data</button>
+            <button onclick="closeJob()">Close Job</button>
+        </div>
+    </div>
+
+    <script>
+        async function createJob() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let objectName = document.getElementById("object_name").value;
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("object_name", objectName);
+
+            let response = await fetch("http://127.0.0.1:5000/create_job", { method: "POST", body: formData });
+            let jobId = await response.text();
+            document.getElementById("job_id").value = jobId;
+        }
+
+        async function uploadData() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let jobId = document.getElementById("job_id").value;
+            let csvFile = document.getElementById("csv_file").files[0];
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("job_id", jobId);
+            formData.append("file", csvFile);
+
+            let response = await fetch("http://127.0.0.1:5000/upload_data", { method: "POST", body: formData });
+            let result = await response.json();
+            alert(result.message || result.messae);
+        }
+
+        async function closeJob() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let jobId = document.getElementById("job_id").value;
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("job_id", jobId);
+
+            let response = await fetch("http://127.0.0.1:5000/close_job", { method: "POST", body: formData });
+            let result = await response.json();
+            alert(result.message || result.error);
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Bulk Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            display: block;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Salesforce Bulk Upload</h2>
+    <label>Access Token:</label>
+    <input type="text" id="access_token">
+    <label>Instance URL:</label>
+    <input type="text" id="instance_url">
+    <label>Object Name:</label>
+    <input type="text" id="object_name">
+    <button onclick="createJob()">Create Job</button>
+    
+    <label>Job ID:</label>
+    <input type="text" id="job_id">
+    <input type="file" id="csv_file">
+    <button onclick="uploadData()">Upload Data</button>
+    <button onclick="closeJob()">Close Job</button>
+    
+    <script>
+        async function createJob() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let objectName = document.getElementById("object_name").value;
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("object_name", objectName);
+
+            let response = await fetch("http://127.0.0.1:5000/create_job", { method: "POST", body: formData });
+            let jobId = await response.text();
+            document.getElementById("job_id").value = jobId;
+        }
+
+        async function uploadData() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let jobId = document.getElementById("job_id").value;
+            let csvFile = document.getElementById("csv_file").files[0];
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("job_id", jobId);
+            formData.append("file", csvFile);
+
+            let response = await fetch("http://127.0.0.1:5000/upload_data", { method: "POST", body: formData });
+            let result = await response.json();
+            alert(result.message || result.messae);
+        }
+
+        async function closeJob() {
+            let accessToken = document.getElementById("access_token").value;
+            let instanceUrl = document.getElementById("instance_url").value;
+            let jobId = document.getElementById("job_id").value;
+
+            let formData = new FormData();
+            formData.append("access_token", accessToken);
+            formData.append("instance_url", instanceUrl);
+            formData.append("job_id", jobId);
+
+            let response = await fetch("http://127.0.0.1:5000/close_job", { method: "POST", body: formData });
+            let result = await response.json();
+            alert(result.message || result.error);
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
